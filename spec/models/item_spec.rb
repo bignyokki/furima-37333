@@ -32,8 +32,18 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include "Item category can't be blank"
       end
+      it 'カテゴリーに「---」が選択されている場合は出品できない' do
+        @item.item_category_id = '1'
+        @item.valid?
+        expect(@item.errors.full_messages).to include "Item category can't be blank"
+      end
       it '商品の状態が空で出品できない' do
         @item.item_sales_status_id = ''
+        @item.valid?
+        expect(@item.errors.full_messages).to include "Item sales status can't be blank"
+      end
+      it '商品の状態に「---」が選択されている場合は出品できない' do
+        @item.item_sales_status_id = '1'
         @item.valid?
         expect(@item.errors.full_messages).to include "Item sales status can't be blank"
       end
@@ -42,13 +52,28 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include "Item shipping fee status can't be blank"
       end
+      it '配送料の負担に「---」が選択されている場合は出品できない' do
+        @item.item_shipping_fee_status_id = '1'
+        @item.valid?
+        expect(@item.errors.full_messages).to include "Item shipping fee status can't be blank"
+      end
       it '発送元の地域が空で出品できない' do
         @item.prefecture_id = ''
         @item.valid?
         expect(@item.errors.full_messages).to include "Prefecture can't be blank"
       end
+      it '発送元の地域に「---」が選択されている場合は出品できない' do
+        @item.prefecture_id = '1'
+        @item.valid?
+        expect(@item.errors.full_messages).to include "Prefecture can't be blank"
+      end
       it '発送までの日数が空で出品できない' do
         @item.item_scheduled_delivery_id = ''
+        @item.valid?
+        expect(@item.errors.full_messages).to include "Item scheduled delivery can't be blank"
+      end
+      it '発送までの日数に「---」が選択されている場合は出品できない' do
+        @item.item_scheduled_delivery_id = '1'
         @item.valid?
         expect(@item.errors.full_messages).to include "Item scheduled delivery can't be blank"
       end
@@ -71,6 +96,11 @@ RSpec.describe Item, type: :model do
         @item.item_price = 'あいうえお'
         @item.valid?
         expect(@item.errors.full_messages).to include 'Item price is not a number'
+      end
+      it '販売価格に小数が含まれていると出品できない' do
+        @item.item_price = '300.1'
+        @item.valid?
+        expect(@item.errors.full_messages).to include 'Item price must be an integer'
       end
       it 'userが紐付いていないと出品できない' do
         @item.user = nil
