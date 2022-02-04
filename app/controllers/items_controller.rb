@@ -1,5 +1,6 @@
 class ItemsController < ApplicationController
   before_action :move_to_login, except: [:index, :show, :destroy]
+  before_action :move_to_index, only: :edit
 
   def index
     @item = Item.order('created_at DESC')
@@ -57,5 +58,10 @@ class ItemsController < ApplicationController
 
   def move_to_login
     redirect_to new_user_session_path unless user_signed_in?
+  end
+
+  def move_to_index
+    item = Item.find(params[:id])
+    redirect_to root_path unless current_user.id == item.user_id
   end
 end
