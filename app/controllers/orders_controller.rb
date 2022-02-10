@@ -1,10 +1,10 @@
 class OrdersController < ApplicationController
   before_action :move_to_login, only: :index
   before_action :move_to_index, only: :index
+  before_action :set_item
 
 
   def index
-    @item = Item.find(params[:item_id])
     @order_address = OrderAddress.new
   end
 
@@ -15,7 +15,6 @@ class OrdersController < ApplicationController
       @order_address.save
       redirect_to root_path
     else
-      @item = Item.find(params[:item_id])
       render :index
     end
   end
@@ -23,7 +22,6 @@ class OrdersController < ApplicationController
   private
 
   def move_to_index
-    binding.pry
     item = Item.find(params[:item_id])
     order = Order.find_by(item_id: params[:item_id])
     redirect_to root_path if current_user.id == item.user_id || order.present?
@@ -31,6 +29,10 @@ class OrdersController < ApplicationController
 
   def move_to_login
     redirect_to new_user_session_path unless user_signed_in?
+  end
+
+  def set_item
+    @item = Item.find(params[:item_id])
   end
 
   def order_params
